@@ -1,7 +1,7 @@
 import logging
 from botocore.exceptions import ClientError
 from auth import init_client
-from bucket.crud import list_buckets, create_bucket, delete_bucket, bucket_exists
+from bucket.crud import list_buckets, create_bucket, delete_bucket, bucket_exists, delete_file
 from bucket.policy import read_bucket_policy, assign_policy
 from object.crud import download_file_and_upload_to_s3, get_objects, upload_file, upload_file_obj, upload_file_put, multipart_upload, put_policy
 from bucket.encryption import set_bucket_encryption, read_bucket_encryption
@@ -217,6 +217,21 @@ parser.add_argument("-pp",
                     nargs="?",
                     const="True",
                     default="False")
+
+parser.add_argument("-df",
+                    "--delete_file",
+                    help="flag to delete file",
+                    choices=["False", "True"],
+                    type=str,
+                    nargs="?",
+                    const="True",
+                    default="False")
+
+parser.add_argument("-fn",
+                    "--file_name",
+                    type=str,
+                    help="name to file",
+                    default=None)
                     
 
 def main():
@@ -281,6 +296,10 @@ def main():
 
     if (args.put_policy == "True"):
       put_policy(s3_client, args.bucket_name)
+
+    if (args.delete_file == "True") and args.file_name and delete_file(
+      s3_client, args.bucket_name, args.file_name):
+      print("File successfully deleted")
 
   if (args.bucket_list):
     buckets = list_buckets(s3_client)
