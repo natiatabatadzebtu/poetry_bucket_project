@@ -28,12 +28,6 @@ def delete_bucket(aws_s3_client, bucket_name) -> bool:
         return True
     return False
 
-def delete_file(aws_s3_client, bucket_name, key) -> bool:
-    response = aws_s3_client.delete_object(Bucket=bucket_name, Key=key)
-    status_code = response["ResponseMetadata"]["HTTPStatusCode"]
-    if status_code == 204:
-        return True
-    return False
 
 def bucket_exists(aws_s3_client, bucket_name) -> bool:
     try:
